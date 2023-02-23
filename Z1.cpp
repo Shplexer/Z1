@@ -1,33 +1,27 @@
 #include "header.h"
 
-std::fstream file;
+std::ifstream file;
 
 int main(){
-	setlocale(LC_ALL, "Russian");
+	//setlocale(LC_ALL, "Russian");
 	std::string fileName{ "--" };
 	int size{ 1 };
-
-	std::tie(fileName, size) = openFileMenu();	//Начальное меню
-
-	enrollee* people = new enrollee[size];
-	setList(people, size); //Занесение данных в массив из файла
-
-	editOptions(people, size); //Меню редактирования
-	file.close();
-	delete[] people;
-	people = NULL;
+	bool exitCondition = false;
+	do {
+		size = openFileMenu();
+		enrollee* people = new enrollee[size];
+		setList(people, size);						
+		exitCondition = editOptions(people, size);
+		file.close();
+		delete[] people;
+		people = NULL;
+	} while (!exitCondition);
 	return 0;
 }
 
 void openFile(std::string fileName) {
 	file.open(fileName);
-	while (!file.is_open())
-	{
-		std::cout << "Ошибка открытия файла " << fileName << std::endl;
-		std::cout << "Введите название файла, который нужно создать/изменить: ";
-		std::cin >> fileName;
-	}
-	std::cout << "Файл открыт" << std::endl;
+	std::cout << "File "<< fileName << " is open" << std::endl;
 }
 
 void setList(enrollee* people, int size) {
@@ -47,12 +41,43 @@ void setList(enrollee* people, int size) {
 		std::getline(file, str, ' ');
 		people[i].setAddress(str);
 
-		/*std::getline(file, str, '\n');
-		people[i].SetGrade(str);*/
 		int num{ 0 };
-
 		file >> num;
-
 		people[i].setGrade(num);
 	}
+}
+
+int calculateSize(std::string fileName) {
+	std::string line;
+	int count = 0;
+	std::ifstream mFile(fileName);
+	if (mFile.is_open())
+	{
+		while (mFile.peek() != EOF)
+		{
+			getline(mFile, line);
+			count++;
+		}
+		mFile.close();
+		//std::cout << "Number of lines in the file are: " << count << std::endl;
+	}
+
+	return count;
+}
+
+void saveToFile(enrollee* people, int size) {
+	std::string saveFileName{ "==" };
+	std::ofstream save;
+	std::cout << "Enter the name of the file you wish to save the list to: ";
+	std::cin >> saveFileName;
+	saveFileName = saveFileName + ".txt";
+	save.open(saveFileName, std::ios::out);
+	for (int i = 0; i < size; i++) {
+		save << people[i].getLastName() << " " <<
+			people[i].getFirstName() << " " <<
+			people[i].getMiddleName() << " " <<
+			people[i].getAddress() << " " <<
+			people[i].getGrade() << std::endl;
+	}
+	save.close();
 }

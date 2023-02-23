@@ -2,9 +2,12 @@
 #define __CLASSES_H_
 #include <iostream>
 #include <iomanip>
+
+#define SSHRT 3
 #define SHRT 5
 #define LNG 15
 #define MID 10
+
 class enrollee {
 private:
 	std::string firstName{ "--" };
@@ -32,26 +35,6 @@ public:
 	void setNumber(int input) {
 		number = input;
 	}
-	//Консольный ввод всех данных
-	void setAllInfo() {
-		std::string input = "--";
-		std::cout << "Введите имя: ";
-		std::cin >> input;
-		setFirstName(input);
-		std::cout << "Введите фамилию: ";
-		std::cin >> input;
-		setLastName(input);
-		std::cout << "Введите отчество: ";
-		std::cin >> input;
-		setMiddleName(input);
-		std::cout << "Введите адрес: ";
-		std::cin >> input;
-		setAddress(input);
-		std::cout << "Введите оценку: ";
-		int num{ 0 };
-		std::cin >> num;
-		setGrade(num);
-	}
 	//get 
 	std::string getFirstName() {
 		return firstName;
@@ -77,6 +60,7 @@ public:
 		std::cout
 			<< std::left
 			<< std::setw(SHRT) << number
+			<< std::setw(SHRT) << "||"
 			<< std::setw(MID) << lastName
 			<< std::setw(MID) << firstName
 			<< std::setw(LNG) << middleName
@@ -84,8 +68,9 @@ public:
 			<< std::setw(LNG) << address
 			<< std::setw(SHRT) << "||"
 			<< std::setw(SHRT) << grade
-			<< std::right << std::setw(SHRT + 1) << "||"<<std::endl;
+			<< std::right << std::setw(SHRT) << "||"<<std::endl;
 	}
 	
 };
+
 #endif

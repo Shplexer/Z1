@@ -2,18 +2,14 @@
 #define __MENUFUNCTIONS_H_
 #include <iostream>
 #include <string>
-#include <tuple>
 #include "classes.h"
 #include "header.h"
 #include "functions.h"
 
+enum FileChoice { templateFile = 1, customFile, leaveFileMenu };
+enum ActionChoice { add = 1, sortArray, moreThan, top, returnToSrc, save, returnToMain, leaveEditMenu };
 
-#define TEMPLATE_SIZE 10
-
-enum FileChoice { templateFile = 1, customFile, leaveFile };
-enum ActionChoice { sortArray = 1, moreThan, top, returnToSrc, leaveEditMenu };
-
-std::tuple < std::string, int > openFileMenu(void);
-void editOptions(enrollee* people, int size);
+int openFileMenu(void);
+bool editOptions(enrollee* people, int size);
 
 #endif

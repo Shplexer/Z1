@@ -9,13 +9,14 @@
 #define MID 10
 
 enum SortChoice { byName = 1, byCity, byGrade };
+int CheckInt(void);
 
 void sortEnrollee(enrollee* people, int size);
+int AddToArray(enrollee** people, int size);
 int showLimited(enrollee** people, int size);
 int topN(enrollee** people, int size);
 bool nameCmp(enrollee& a, enrollee& b);
 bool cityCmp(enrollee& a, enrollee& b);
 bool gradeCmp(enrollee& a, enrollee& b);
 void printAll(enrollee* people, int size);
-
 #endif

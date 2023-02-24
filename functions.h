@@ -10,7 +10,8 @@
 
 enum SortChoice { byName = 1, byCity, byGrade };
 int CheckInt(void);
-
+std::string makeLineGood(void);
+std::string getGoodLine(std::string input);
 void sortEnrollee(enrollee* people, int size);
 int AddToArray(enrollee** people, int size);
 int showLimited(enrollee** people, int size);

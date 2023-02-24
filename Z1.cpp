@@ -21,7 +21,10 @@ int main(){
 
 void openFile(std::string fileName) {
 	file.open(fileName);
-	std::cout << "File "<< fileName << " is open" << std::endl;
+	if(file.is_open())
+		std::cout << "File \""<<getGoodLine(fileName) << "\" is open" << std::endl;
+	else
+		std::cout << "File \"" << getGoodLine(fileName) << "\" is created! Don't forget to save it!" << std::endl;
 }
 
 void setList(enrollee* people, int size) {
@@ -69,7 +72,7 @@ void saveToFile(enrollee* people, int size) {
 	std::string saveFileName{ "==" };
 	std::ofstream save;
 	std::cout << "Enter the name of the file you wish to save the list to: ";
-	std::cin >> saveFileName;
+	saveFileName = makeLineGood();
 	saveFileName = saveFileName + ".txt";
 	save.open(saveFileName, std::ios::out);
 	for (int i = 0; i < size; i++) {

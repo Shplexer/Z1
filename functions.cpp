@@ -1,5 +1,25 @@
 #include "functions.h"
 
+std::string makeLineGood(void){
+	std::string input{ "==" };
+	std::getline(std::cin >> std::ws, input);
+	for (int i = 0; i < input.size(); i++) {
+		if (input[i] == ' ') {
+			input[i] = '_';
+		}
+	}
+	return input;
+}
+
+std::string getGoodLine(std::string input) {
+	std::string temp = input;
+	for (int i = 0; i < temp.size(); i++) {
+		if (temp[i] == '_') {
+			temp[i] = ' ';
+		}
+	}
+	return temp;
+}
 
 void sortEnrollee(enrollee* people, int size) {
 	int choice{ 0 };
@@ -54,20 +74,16 @@ int AddToArray(enrollee** people, int srcSize) {
 		else {
 			std::cout << "====================================================================================" << std::endl;
 			std::string input = "--";
-			std::cout << "Enter last name: ";
-			std::cin >> input;
-			temp[i].setLastName(input);
-			std::cout << "Enter first name: ";
-			std::cin >> input;
-			temp[i].setFirstName(input);
-			std::cout << "Enter midlle name: ";
-			std::cin >> input;
-			temp[i].setMiddleName(input);
-			std::cout << "Enter address: ";
-			std::cin >> input;
-			temp[i].setAddress(input);
-			std::cout << "Enter grade: ";
 			int num{ 0 };
+			std::cout << "Enter last name: ";
+			temp[i].setLastName(makeLineGood());
+			std::cout << "Enter first name: ";
+			temp[i].setFirstName(makeLineGood());
+			std::cout << "Enter midlle name: ";
+			temp[i].setMiddleName(makeLineGood());
+			std::cout << "Enter address: ";
+			temp[i].setAddress(makeLineGood());
+			std::cout << "Enter grade: ";
 			temp[i].setGrade(CheckInt());
 			temp[i].setNumber(i + 1);
 		}

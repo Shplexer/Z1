@@ -23,7 +23,7 @@ int openFileMenu(void){
 		break;
 	case FileChoice::customFile:
 		std::cout << "Enter the name of a file you'd like to open: ";
-		std::cin >> fileName;
+		fileName = makeLineGood();
 		break;
 	case FileChoice::leaveFileMenu:
 		std::cout << "Exiting the programm...";

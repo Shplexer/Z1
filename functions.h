@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include "classes.h"
+#define SSHRT 4
 #define SHRT 5
 #define LNG 15
 #define MID 10

@@ -23,26 +23,33 @@ std::string getGoodLine(std::string input) {
 
 void sortEnrollee(enrollee* people, int size) {
 	int choice{ 0 };
+	bool exit = false;
 	std::cout << "Choose sorting method: " << std::endl <<
 		"1.By last name" << std::endl <<
 		"2.By address" << std::endl <<
 		"3.By grades" << std::endl;
-	choice = CheckInt();
-	switch (choice)
-	{
-	case SortChoice::byName:
-		std::sort(&people[0], &people[size], nameCmp);
-		break;
-	case SortChoice::byCity:
-		std::sort(&people[0], &people[size], cityCmp);
-		break;
-	case SortChoice::byGrade:
-		std::sort(&people[0], &people[size], gradeCmp);
-		break;
-	default:
-		std::cout << "ERR. Wrong input.";
-		break;
-	}
+	do {
+		choice = CheckInt();
+		switch (choice)
+		{
+		case SortChoice::byName:
+			std::sort(&people[0], &people[size], nameCmp);
+			exit = true;
+			break;
+		case SortChoice::byCity:
+			std::sort(&people[0], &people[size], cityCmp);
+			exit = true;
+			break;
+		case SortChoice::byGrade:
+			std::sort(&people[0], &people[size], gradeCmp);
+			exit = true;
+			break;
+		default:
+			std::cout << "ERR. Wrong input, try again" <<std::endl;
+			exit = false;
+			break;
+		}
+	} while (!exit);
 }
 
 int CheckInt(void) {
@@ -72,20 +79,21 @@ int AddToArray(enrollee** people, int srcSize) {
 			temp[i].setNumber((*people)[i].getNumber());
 		}
 		else {
-			std::cout << "====================================================================================" << std::endl;
+			std::cout << "==============================================================================================" << std::endl;
 			std::string input = "--";
 			int num{ 0 };
 			std::cout << "Enter last name: ";
 			temp[i].setLastName(makeLineGood());
 			std::cout << "Enter first name: ";
 			temp[i].setFirstName(makeLineGood());
-			std::cout << "Enter midlle name: ";
+			std::cout << "Enter middle name: ";
 			temp[i].setMiddleName(makeLineGood());
 			std::cout << "Enter address: ";
 			temp[i].setAddress(makeLineGood());
 			std::cout << "Enter grade: ";
 			temp[i].setGrade(CheckInt());
 			temp[i].setNumber(i + 1);
+
 		}
 	}
 	delete[] * people;
@@ -132,6 +140,7 @@ int showLimited(enrollee** people, int size) {
 		(*people)[i].setMiddleName(temp[i].getMiddleName());
 		(*people)[i].setGrade(temp[i].getGrade());
 		(*people)[i].setNumber(temp[i].getNumber());
+
 	}
 	delete[] temp;
 	temp = NULL;
@@ -141,7 +150,12 @@ int showLimited(enrollee** people, int size) {
 int topN(enrollee** people, int size) {
 	int newSize{ 0 };
 	std::cout << "Enter the number of enrollees with the highest grades: ";
-	newSize = CheckInt();
+	do {
+		newSize = CheckInt();
+		if (newSize > size)
+			std::cout << "ERR. Wrong input, try again" <<std::endl;
+	} while (newSize > size);
+	std::cout << "=========================" << std::endl;
 	enrollee* temp = new enrollee[newSize];
 	size = newSize;
 	for (int i = 0; i < size; i++) {
@@ -180,12 +194,12 @@ bool gradeCmp(enrollee& a, enrollee& b) {
 }
 
 void printAll(enrollee* people, int size) {
-	std::cout << "====================================================================================" << std::endl;
+	std::cout << "==============================================================================================" << std::endl;
 	std::cout << "Enrollees: " << std::endl;
-	std::cout << "====================================================================================" << std::endl;
+	std::cout << "==============================================================================================" << std::endl;
 	std::cout
 		<< std::left 
-		<< std::setw(SHRT) << "#"
+		<< std::setw(SSHRT) << "#"
 		<< std::setw(SHRT) << "||"
 		<< std::setw(MID) << "Last"
 		<< std::setw(MID) << "First"
@@ -196,9 +210,10 @@ void printAll(enrollee* people, int size) {
 		<< std::right << std::setw(SHRT) << "Grade"
 		<< std::setw(SHRT) << "||"
 		<< std::endl;
-	std::cout << "====================================================================================" << std::endl;
+	std::cout << "==============================================================================================" << std::endl;
 	for (int i = 0; i < size; i++) {
+		people[i].setNumber(i + 1);
 		people[i].showInfo();
 	}
-	std::cout << "====================================================================================" << std::endl;
+	std::cout << "==============================================================================================" << std::endl;
 }

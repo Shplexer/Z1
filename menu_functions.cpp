@@ -4,8 +4,9 @@ int openFileMenu(void){
 	int size{ 1 };
 	int choice{ 0 };
 	std::string fileName{ "--" };
+	bool exit = true;
 	std::cout << "Welcome!" << std::endl << "Var #2 by Daniil Orekhov" << std::endl;
-	std::cout << "====================================================================================" << std::endl;
+	std::cout << "==============================================================================================" << std::endl;
 	std::cout << "Task: Develop a class for a given subject area" << std::endl <<
 		"Access to the data must be implemented through the Set, Get and Show methods" << std::endl <<
 		"Enrollee: last name, first name, middle name, address, grades. Create an array of objects." << std::endl <<
@@ -13,25 +14,34 @@ int openFileMenu(void){
 		"- A sorted list of enrollees, " << std::endl <<
 		"- A list of enrollees with grades higher than the input number, " << std::endl <<
 		"- A list of N enrollees with the highest grades." << std::endl;
-	std::cout << "====================================================================================" << std::endl;
-	std::cout << "1. Load a template file" << std::endl << "2. Load a custom file" << std::endl;
-	choice = CheckInt();
-	switch (choice)
-	{
-	case FileChoice::templateFile:
-		fileName = "template";
-		break;
-	case FileChoice::customFile:
-		std::cout << "Enter the name of a file you'd like to open: ";
-		fileName = makeLineGood();
-		break;
-	case FileChoice::leaveFileMenu:
-		std::cout << "Exiting the programm...";
-		std::exit(0);
-	default:
-		std::cout << "ERR. Wrong input.";
-		break;
-	}
+	std::cout << "==============================================================================================" << std::endl;
+	std::cout 
+		<< "1. Load a template file" << std::endl 
+		<< "2. Load a custom file" << std::endl 
+		<< "3. Exit" << std::endl;
+	std::cout << "==============================================================================================" << std::endl;
+	do {
+		choice = CheckInt();
+		switch (choice)
+		{
+		case FileChoice::templateFile:
+			fileName = "template";
+			exit = true;
+			break;
+		case FileChoice::customFile:
+			std::cout << "Enter the name of a source file: ";
+			fileName = makeLineGood();
+			exit = true;
+			break;
+		case FileChoice::leaveFileMenu:
+			std::cout << "Exiting the programm...";
+			std::exit(0);
+		default:
+			std::cout << "ERR. Wrong input, try again" <<std::endl;
+			exit = false;
+			break;
+		}
+	} while (!exit);
 	fileName = fileName + ".txt";
 	openFile(fileName);
 	size = calculateSize(fileName);
@@ -64,7 +74,7 @@ bool editOptions(enrollee* source, int srcSize) {
 			"6.Save info to a file" << std::endl <<
 			"7.Exit to main menu" << std::endl <<
 			"8.Exit the programm." << std::endl;
-		std::cout << "====================================================================================" << std::endl;
+		std::cout << "==============================================================================================" << std::endl;
 		action_choice = CheckInt();
 		switch (action_choice) {
 		case ActionChoice::add:
@@ -77,7 +87,7 @@ bool editOptions(enrollee* source, int srcSize) {
 			size = showLimited(&people, size);				//Фильтр массива и возвращение нового размера
 			break;
 		case ActionChoice::top:
-			std::sort(&people[0], &people[size], gradeCmp); //Сортировка массива по возрастающей, по баллам
+			//std::sort(&people[0], &people[size], gradeCmp); //Сортировка массива по возрастающей, по баллам
 			size = topN(&people, size);						//Вывод первых N элементов отсортированного массива
  			break;
 		case ActionChoice::returnToSrc:						//Сброс массива к исходному
@@ -90,6 +100,7 @@ bool editOptions(enrollee* source, int srcSize) {
 				people[i].setLastName(source[i].getLastName());
 				people[i].setMiddleName(source[i].getMiddleName());
 				people[i].setGrade(source[i].getGrade());
+				people[i].setNumber(source[i].getNumber());
 			}
 			break;
 		case ActionChoice::save:
@@ -106,7 +117,7 @@ bool editOptions(enrollee* source, int srcSize) {
 			exitAll = true; 
 			break;
 		default:
-			std::cout << "ERR. Wrong input.";
+			std::cout << "ERR. Wrong input, try again" <<std::endl;
 			break;
 		}
 	} while (!exitEdit);

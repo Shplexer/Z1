@@ -47,6 +47,8 @@ void setList(enrollee* people, int size) {
 		int num{ 0 };
 		file >> num;
 		people[i].setGrade(num);
+
+		people[i].setNumber(i + 1);
 	}
 }
 

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-#define SSHRT 3
+#define SSHRT 4
 #define SHRT 5
 #define LNG 15
 #define MID 10
@@ -46,7 +46,6 @@ public:
 	void setNumber(int input) {
 		number = input;
 	}
-	//get 
 	std::string getFirstName() {
 		return firstName;
 	}
@@ -65,12 +64,13 @@ public:
 	int getNumber() {
 		return number;
 	}
+
 	//show
 	void showInfo() {
 		std::string temp = lastName;
 		std::cout
 			<< std::left
-			<< std::setw(SHRT) << number
+			<< std::setw(SSHRT) << number
 			<< std::setw(SHRT) << "||"
 			<< std::setw(MID) << getGoodLine(lastName)
 			<< std::setw(MID) << getGoodLine(firstName)

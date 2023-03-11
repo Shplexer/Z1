@@ -10,8 +10,8 @@
 
 void setList(enrollee* people, int size);
 void openFile(std::string fileName);
-int calculateSize(std::string fileName);
 void saveToFile(enrollee* people, int size);
+int calculateSize(std::string fileName);
 
 
 #endif

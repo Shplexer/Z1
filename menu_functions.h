@@ -6,10 +6,10 @@
 #include "header.h"
 #include "functions.h"
 
-enum FileChoice { templateFile = 1, customFile, leaveFileMenu };
-enum ActionChoice { add = 1, sortArray, moreThan, top, returnToSrc, save, returnToMain, leaveEditMenu };
+enum FileChoice { test = 1, customFile, emptyStart, leaveFileMenu };
+enum ActionChoice { add = 1, sortArray, moreThan, top, save, returnToMain, leaveEditMenu };
 
-int openFileMenu(void);
+std::string openFileMenu();
 bool editOptions(enrollee* people, int size);
 
 #endif

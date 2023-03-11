@@ -1,7 +1,20 @@
 #include "functions.h"
 
-std::string makeLineGood(void){
+std::string fileNameCheck(std::string inputName) {
+	std::string temp;
+	size_t nameSize = inputName.size();
+	for (size_t i = nameSize - 4; i < nameSize; i++) {
+		temp = temp + inputName[i];
+	}
+	if (temp != ".txt") {
+		inputName = inputName + ".txt";
+	}
+	return inputName;
+}
+
+std::string makeLineGood(){
 	std::string input{ "==" };
+	
 	std::getline(std::cin >> std::ws, input);
 	for (int i = 0; i < input.size(); i++) {
 		if (input[i] == ' ') {
@@ -21,27 +34,53 @@ std::string getGoodLine(std::string input) {
 	return temp;
 }
 
+void resizeArr(enrollee** oldArr, int oldSize, int newSize) {
+	enrollee* temp = new enrollee[newSize];
+	for (int i = 0; i < newSize; i++) {
+		if (i < oldSize) {
+			temp[i].setAddress((*oldArr)[i].getAddress());
+			temp[i].setFirstName((*oldArr)[i].getFirstName());
+			temp[i].setLastName((*oldArr)[i].getLastName());
+			temp[i].setMiddleName((*oldArr)[i].getMiddleName());
+			temp[i].setGrade((*oldArr)[i].getGrade());
+			temp[i].setNumber((*oldArr)[i].getNumber());
+		}
+		else {
+			temp[i].setNumber(i + 1);
+		}
+	}
+	delete[] * oldArr;
+	*oldArr = new enrollee[newSize];
+	for (int i = 0; i < newSize; i++) {
+		(*oldArr)[i].setAddress(temp[i].getAddress());
+		(*oldArr)[i].setFirstName(temp[i].getFirstName());
+		(*oldArr)[i].setLastName(temp[i].getLastName());
+		(*oldArr)[i].setMiddleName(temp[i].getMiddleName());
+		(*oldArr)[i].setGrade(temp[i].getGrade());
+		(*oldArr)[i].setNumber(temp[i].getNumber());
+	}
+	delete[] temp;
+	temp = NULL;
+}
+
 void sortEnrollee(enrollee* people, int size) {
 	int choice{ 0 };
 	bool exit = false;
 	std::cout << "Choose sorting method: " << std::endl <<
 		"1.By last name" << std::endl <<
-		"2.By address" << std::endl <<
-		"3.By grades" << std::endl;
+		"2.By grades" << std::endl;
 	do {
-		choice = CheckInt();
+		choice = checkInt();
 		switch (choice)
 		{
 		case SortChoice::byName:
-			std::sort(&people[0], &people[size], nameCmp);
-			exit = true;
-			break;
-		case SortChoice::byCity:
-			std::sort(&people[0], &people[size], cityCmp);
+			//std::sort(&people[0], &people[size], nameCmp);
+			quickSortString(&people, 0, (size - 1));
 			exit = true;
 			break;
 		case SortChoice::byGrade:
-			std::sort(&people[0], &people[size], gradeCmp);
+			quickSortInt(people, 0, (size - 1));
+			//std::sort(&people[0], &people[size], gradeCmp);
 			exit = true;
 			break;
 		default:
@@ -52,140 +91,97 @@ void sortEnrollee(enrollee* people, int size) {
 	} while (!exit);
 }
 
-int CheckInt(void) {
+int checkInt() {
 	int input{ 0 };
 	while (!(std::cin >> input)) {
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
+		std::cin.clear();				//discard err flag
+		std::cin.ignore(INT_MAX, '\n');	//clear buffer for INT_MAX characters or until \n
 		std::cout << "ERR. Wrong input, try again" << std::endl;
 	}
 	while ((getchar()) != '\n');
 	return input;
 }
 
-int AddToArray(enrollee** people, int srcSize) {
+int addToArray(enrollee** people, int srcSize) {
 	int newSize{ 0 };
 	std::cout << "Enter the number of enrollees you wish to add: ";
-	newSize = CheckInt();
+	newSize = checkInt();
 	newSize = srcSize + newSize;
-	enrollee* temp = new enrollee[newSize];
-	for (int i = 0; i < newSize; i++) { //?????
-		if(i < srcSize){
-			temp[i].setAddress((*people)[i].getAddress());
-			temp[i].setFirstName((*people)[i].getFirstName());
-			temp[i].setLastName((*people)[i].getLastName());
-			temp[i].setMiddleName((*people)[i].getMiddleName());
-			temp[i].setGrade((*people)[i].getGrade());
-			temp[i].setNumber((*people)[i].getNumber());
-		}
-		else {
-			std::cout << "==============================================================================================" << std::endl;
-			std::string input = "--";
-			int num{ 0 };
-			std::cout << "Enter last name: ";
-			temp[i].setLastName(makeLineGood());
-			std::cout << "Enter first name: ";
-			temp[i].setFirstName(makeLineGood());
-			std::cout << "Enter middle name: ";
-			temp[i].setMiddleName(makeLineGood());
-			std::cout << "Enter address: ";
-			temp[i].setAddress(makeLineGood());
-			std::cout << "Enter grade: ";
-			temp[i].setGrade(CheckInt());
-			temp[i].setNumber(i + 1);
-
-		}
+	resizeArr(people, srcSize, newSize);
+	for (int i = srcSize; i < newSize; i++) {
+		std::cout << "==============================================================================================" << std::endl;
+		std::string input = "--";
+		int num{ 0 };
+		std::cout << "Enter last name: ";
+		(*people)[i].setLastName(makeLineGood());
+		std::cout << "Enter first name: ";
+		(*people)[i].setFirstName(makeLineGood());
+		std::cout << "Enter middle name: ";
+		(*people)[i].setMiddleName(makeLineGood());
+		std::cout << "Enter address: ";
+		(*people)[i].setAddress(makeLineGood());
+		std::cout << "Enter grade: ";
+		(*people)[i].setGrade(checkInt());
+		(*people)[i].setNumber(i + 1);
 	}
-	delete[] * people;
-	*people = new enrollee[newSize];
-	for (int i = 0; i < newSize; i++) {
-		(*people)[i].setAddress(temp[i].getAddress());
-		(*people)[i].setFirstName(temp[i].getFirstName());
-		(*people)[i].setLastName(temp[i].getLastName());
-		(*people)[i].setMiddleName(temp[i].getMiddleName());
-		(*people)[i].setGrade(temp[i].getGrade());
-		(*people)[i].setNumber(temp[i].getNumber());
-	}
-	delete[] temp;
-	temp = NULL;
 	return newSize;
 }
 
 int showLimited(enrollee** people, int size) {
-	int minGrade{ 0 };
+	bool exit = true;
 	int newSize{ 0 };
 	int counter{ 0 };
-	std::cout << "Enter the lowest grade: ";
-	minGrade = CheckInt();
-	for (int i = 0; i < size; i++) {
-		if((*people)[i].getGrade() >= minGrade) {
-			counter++;
+	int minGrade{ 0 };
+	do{
+		counter = 0;
+		std::cout << "Enter the lowest grade: ";
+		minGrade = checkInt();
+		for (int i = 0; i < size; i++) {
+			if((*people)[i].getGrade() >= minGrade) {
+				counter++;
+			}
 		}
-	}
-	newSize = counter;
-	enrollee* temp = new enrollee[newSize];
-	for (int i = 0, j = 0; j < newSize; i++) {
-		if ((*people)[i].getGrade() >= minGrade) {
-			temp[j] = (*people)[i];
-			j++;
+		if (counter == 0) {
+			std::cout << "No enrollees with such grades found. Try again" << std::endl;
+			exit = false;
 		}
-	}
-	size = newSize;
-	delete[] *people;
-	*people = new enrollee[size];
-	for (int i = 0; i < size; i++) {
-		(*people)[i].setAddress(temp[i].getAddress());
-		(*people)[i].setFirstName(temp[i].getFirstName());
-		(*people)[i].setLastName(temp[i].getLastName());
-		(*people)[i].setMiddleName(temp[i].getMiddleName());
-		(*people)[i].setGrade(temp[i].getGrade());
-		(*people)[i].setNumber(temp[i].getNumber());
-
-	}
-	delete[] temp;
-	temp = NULL;
-	return size;
+		else {
+			exit = true;
+		}
+	} while (!exit);
+		newSize = counter;
+		for (int i = 0, j = 0; j < newSize; i++) {
+			if ((*people)[i].getGrade() >= minGrade) {
+				(*people)[j].setAddress((*people)[i].getAddress());
+				(*people)[j].setFirstName((*people)[i].getFirstName());
+				(*people)[j].setLastName((*people)[i].getLastName());
+				(*people)[j].setMiddleName((*people)[i].getMiddleName());
+				(*people)[j].setGrade((*people)[i].getGrade());
+				(*people)[j].setNumber((*people)[i].getNumber());
+				j++;
+			}
+		}
+		resizeArr(people, size, newSize);
+	return newSize;
 }
 
 int topN(enrollee** people, int size) {
 	int newSize{ 0 };
 	std::cout << "Enter the number of enrollees with the highest grades: ";
 	do {
-		newSize = CheckInt();
+		newSize = checkInt();
 		if (newSize > size)
 			std::cout << "ERR. Wrong input, try again" <<std::endl;
 	} while (newSize > size);
-	std::cout << "=========================" << std::endl;
-	enrollee* temp = new enrollee[newSize];
-	size = newSize;
-	for (int i = 0; i < size; i++) {
-		temp[i].setAddress((*people)[i].getAddress());
-		temp[i].setFirstName((*people)[i].getFirstName());
-		temp[i].setLastName((*people)[i].getLastName());
-		temp[i].setMiddleName((*people)[i].getMiddleName());
-		temp[i].setGrade((*people)[i].getGrade());
-		temp[i].setNumber((*people)[i].getNumber());
-	}
-	delete[] * people;
-	*people = new enrollee[size];
-	for (int i = 0; i < size; i++) {
-		(*people)[i].setAddress(temp[i].getAddress());
-		(*people)[i].setFirstName(temp[i].getFirstName());
-		(*people)[i].setLastName(temp[i].getLastName());
-		(*people)[i].setMiddleName(temp[i].getMiddleName());
-		(*people)[i].setGrade(temp[i].getGrade());
-		(*people)[i].setNumber(temp[i].getNumber());
-	}
-	delete[] temp;
-	temp = NULL;
-	return size;
+	resizeArr(people, size, newSize);
+	return newSize;
 }
 
 bool nameCmp(enrollee& a, enrollee& b) {
 	return a.getFirstName() < b.getFirstName();
 }
 
-bool cityCmp(enrollee& a, enrollee& b) {
+bool addressCmp(enrollee& a, enrollee& b) {
 	return a.getAddress() < b.getAddress();
 }
 
@@ -217,3 +213,70 @@ void printAll(enrollee* people, int size) {
 	}
 	std::cout << "==============================================================================================" << std::endl;
 }
+
+
+int quickSortInt_divide(enrollee* arr, int start, int end) {
+	int pivot = arr[end].getGrade();
+	int index = start;
+	for (int i = start; i < end; i++) {
+		if (arr[i].getGrade() > pivot) {
+			enrollee temp = arr[i];
+			arr[i] = arr[index];
+			arr[index] = temp;
+			index++;
+
+		}
+	}
+	enrollee temp = arr[end];
+	arr[end] = arr[index];
+	arr[index] = temp;
+	return index;
+}
+
+void quickSortInt(enrollee* arr, int start, int end) {
+	if (start < end) {
+		int d = quickSortInt_divide(arr, start, end);
+		quickSortInt(arr, start, (d - 1));
+		quickSortInt(arr, (d + 1), end);
+	}
+
+}
+
+int quickSortString_divide(enrollee* arr, int start, int end) {
+	std::string pivot = arr[end].getLastName();
+	int index = start;
+	for (int i = start; i < end; i++) {
+		int j = 0;
+		while (j < arr[i].getLastName().size()){
+			if (arr[i].getLastName()[j] < pivot[j]) {
+				enrollee temp = arr[i];
+				arr[i] = arr[index];
+				arr[index] = temp;
+				index++;
+				break;
+			}
+			else if(arr[i].getLastName()[j] == pivot[j]){
+				j++;
+				std::cout << "j = " << j <<" "<< arr[i].getLastName() << " -- " << pivot<< std::endl;
+			}
+			else {
+				//std::cout << "fak off" <<  std::endl;
+				break;
+			}
+		}
+	}
+	std::string temp = arr[end].getLastName();
+	arr[end].setLastName(arr[index].getLastName());
+	arr[index].setLastName(temp);
+	return index;
+}
+
+void quickSortString(enrollee** arr, int start, int end) {
+	if (start < end) {
+		int d = quickSortString_divide(*arr, start, end);
+		quickSortString(arr, start, (d - 1));
+		quickSortString(arr, (d + 1), end);
+	}
+}
+
+

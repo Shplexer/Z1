@@ -4,17 +4,24 @@ std::ifstream file;
 
 int main(){
 	//setlocale(LC_ALL, "Russian");
+	//system("chcp 1251");
 	std::string fileName{ "--" };
 	int size{ 1 };
 	bool exitCondition = false;
 	do {
-		size = openFileMenu();
-		enrollee* people = new enrollee[size];
-		setList(people, size);						
-		exitCondition = editOptions(people, size);
-		file.close();
-		delete[] people;
-		people = NULL;
+		fileName = openFileMenu();
+		if (fileName == "Test.txt") {
+			testFunction();
+		}
+		else {
+			size = calculateSize(fileName);
+			enrollee* people = new enrollee[size];
+			setList(people, size);						
+			exitCondition = editOptions(people, size);
+			file.close();
+			delete[] people;
+			people = nullptr;
+		}
 	} while (!exitCondition);
 	return 0;
 }
@@ -24,7 +31,7 @@ void openFile(std::string fileName) {
 	if(file.is_open())
 		std::cout << "File \""<<getGoodLine(fileName) << "\" is open" << std::endl;
 	else
-		std::cout << "File \"" << getGoodLine(fileName) << "\" is created! Don't forget to save it!" << std::endl;
+		std::cout << "New file is created! Don't forget to save it!" << std::endl;
 }
 
 void setList(enrollee* people, int size) {
@@ -32,7 +39,7 @@ void setList(enrollee* people, int size) {
 	{
 		std::string str{ "--" };
 		char tmp{ ' ' };
-		file >> tmp;
+		file >> tmp;							//удаление \n в конце строк
 		std::getline(file, str, ' ');
 		people[i].setLastName(tmp + str);
 		std::getline(file, str, ' ');
@@ -75,7 +82,15 @@ void saveToFile(enrollee* people, int size) {
 	std::ofstream save;
 	std::cout << "Enter the name of the file you wish to save the list to: ";
 	saveFileName = makeLineGood();
-	saveFileName = saveFileName + ".txt";
+	std::string temp;
+
+	for (size_t i = saveFileName.size() - 4; i < saveFileName.size(); i++) {
+		temp = temp + saveFileName[i];
+	}
+	if (temp != ".txt") {
+		saveFileName = saveFileName + ".txt";
+	}
+	 
 	save.open(saveFileName, std::ios::out);
 	for (int i = 0; i < size; i++) {
 		save << people[i].getLastName() << " " <<

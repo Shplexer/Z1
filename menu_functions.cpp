@@ -1,6 +1,6 @@
 #include "menu_functions.h"
 
-int openFileMenu(void){
+std::string openFileMenu(){
 	int size{ 1 };
 	int choice{ 0 };
 	std::string fileName{ "--" };
@@ -12,25 +12,29 @@ int openFileMenu(void){
 		"Enrollee: last name, first name, middle name, address, grades. Create an array of objects." << std::endl <<
 		"Implement the ability to output: " << std::endl <<
 		"- A sorted list of enrollees, " << std::endl <<
-		"- A list of enrollees with grades higher than the input number, " << std::endl <<
+		"- A list of enrollees with grades higher than or equal to the input number, " << std::endl <<
 		"- A list of N enrollees with the highest grades." << std::endl;
 	std::cout << "==============================================================================================" << std::endl;
-	std::cout 
-		<< "1. Load a template file" << std::endl 
-		<< "2. Load a custom file" << std::endl 
-		<< "3. Exit" << std::endl;
+	std::cout
+		<< "1. Test" << std::endl
+		<< "2. Load a file" << std::endl
+		<< "3. New file" << std::endl
+		<< "4. Exit" << std::endl;
 	std::cout << "==============================================================================================" << std::endl;
 	do {
-		choice = CheckInt();
+		choice = checkInt();
 		switch (choice)
 		{
-		case FileChoice::templateFile:
-			fileName = "template";
+		case FileChoice::test:
+			fileName = "Test";
 			exit = true;
 			break;
 		case FileChoice::customFile:
 			std::cout << "Enter the name of a source file: ";
 			fileName = makeLineGood();
+			exit = true;
+			break;
+		case FileChoice::emptyStart:
 			exit = true;
 			break;
 		case FileChoice::leaveFileMenu:
@@ -42,10 +46,11 @@ int openFileMenu(void){
 			break;
 		}
 	} while (!exit);
-	fileName = fileName + ".txt";
-	openFile(fileName);
-	size = calculateSize(fileName);
-	return size;
+		fileName = fileNameCheck(fileName);
+	if (fileName != "Test.txt") {
+		openFile(fileName);
+	}
+	return fileName;
 }
 
 bool editOptions(enrollee* source, int srcSize) {
@@ -53,7 +58,10 @@ bool editOptions(enrollee* source, int srcSize) {
 	int size = srcSize;
 	bool exitEdit = false;
 	bool exitAll = false;
+	int prevSize = size;
 	enrollee* people = new enrollee[size];
+	enrollee* prevArr = new enrollee[prevSize];
+
 	for (int i = 0; i < size; i++) {
 		people[i].setAddress(source[i].getAddress());
 		people[i].setFirstName(source[i].getFirstName());
@@ -68,17 +76,17 @@ bool editOptions(enrollee* source, int srcSize) {
 		std::cout << "Edit options:" << std::endl <<
 			"1.Add an enrollee to the list" << std::endl <<
 			"2.Sort the list" << std::endl <<
-			"3.Show enrollees with grades higher than the input number" << std::endl <<
+			"3.Show enrollees with grades equal or higher than the input number" << std::endl <<
 			"4.Show N enrollees with the highest grades" << std::endl <<
-			"5.Reset the list" << std::endl <<
-			"6.Save info to a file" << std::endl <<
-			"7.Exit to main menu" << std::endl <<
-			"8.Exit the programm." << std::endl;
+			"5.Save info to a file" << std::endl <<
+			"6.Return to main menu" << std::endl <<
+			"7.Exit the programm." << std::endl;
 		std::cout << "==============================================================================================" << std::endl;
-		action_choice = CheckInt();
+		action_choice = checkInt();
 		switch (action_choice) {
 		case ActionChoice::add:
-			size = AddToArray(&people, size);
+			resizeArr(&prevArr, prevSize, size);
+			size = addToArray(&people, size);
 			break;
 		case ActionChoice::sortArray:
 			sortEnrollee(people, size);						//Сортировка массива по возрастающей, по разным параметрам 
@@ -87,22 +95,11 @@ bool editOptions(enrollee* source, int srcSize) {
 			size = showLimited(&people, size);				//Фильтр массива и возвращение нового размера
 			break;
 		case ActionChoice::top:
+			quickSortInt(people, 0, (size - 1));
 			//std::sort(&people[0], &people[size], gradeCmp); //Сортировка массива по возрастающей, по баллам
 			size = topN(&people, size);						//Вывод первых N элементов отсортированного массива
  			break;
-		case ActionChoice::returnToSrc:						//Сброс массива к исходному
-			delete[] people;
-			size = srcSize;
-			people = new enrollee[size];
-			for (int i = 0; i < size; i++) {
-				people[i].setAddress(source[i].getAddress());
-				people[i].setFirstName(source[i].getFirstName());
-				people[i].setLastName(source[i].getLastName());
-				people[i].setMiddleName(source[i].getMiddleName());
-				people[i].setGrade(source[i].getGrade());
-				people[i].setNumber(source[i].getNumber());
-			}
-			break;
+
 		case ActionChoice::save:
 			saveToFile(people, size);
 			break;
@@ -121,7 +118,6 @@ bool editOptions(enrollee* source, int srcSize) {
 			break;
 		}
 	} while (!exitEdit);
-	delete[] people;
-	people = NULL;
+
 	return exitAll;
 }

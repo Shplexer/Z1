@@ -102,7 +102,11 @@ int addToArray(enrollee** arr, int srcSize, bool test) {
 	int newSize{ 0 };
 	if (test == false) {
 		std::cout << "Enter the number of enrollees you wish to add: ";
-		newSize = checkInt();
+		do {
+			newSize = checkInt();
+			if (newSize <= 0)
+				std::cout << "ERR. Enter a valid number." << std::endl;
+		} while (newSize <= 0);
 	}
 	else{
 		newSize++;
@@ -123,7 +127,12 @@ int addToArray(enrollee** arr, int srcSize, bool test) {
 			std::cout << "Enter address: ";
 			(*arr)[i].setAddress(makeLineGood());
 			std::cout << "Enter grade: ";
-			(*arr)[i].setGrade(checkInt());
+			do{
+				num = checkInt();
+				if (num < 0)
+					std::cout << "ERR. Enter a positive number of grades" << std::endl;
+			} while (num < 0);
+			(*arr)[i].setGrade(num);
 		}
 		else {
 			char ch = D;
@@ -188,9 +197,9 @@ int topN(enrollee** arr, int size, bool test) {
 		std::cout << "Enter the number of enrollees with the highest grades: ";
 		do {
 			newSize = checkInt();
-			if (newSize > size)
+			if (newSize > size || newSize <= 0)
 				std::cout << "ERR. Wrong input, try again" <<std::endl;
-		} while (newSize > size);
+		} while (newSize > size || newSize <= 0);
 	}
 	else {
 		newSize = TESTTOPN;

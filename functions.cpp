@@ -226,15 +226,33 @@ void printAll(enrollee* arr, int size) {
 
 
 int quickSortInt_divide(enrollee* arr, int start, int end) {
-	int pivot = arr[end].getGrade();
+	enrollee pivot = arr[end];
 	int index = start;
 	for (int i = start; i < end; i++) {
-		if (arr[i].getGrade() > pivot) {
+		if (arr[i].getGrade() > pivot.getGrade()) {
 			enrollee temp = arr[i];
 			arr[i] = arr[index];
 			arr[index] = temp;
 			index++;
 
+		}
+		else if (arr[i].getGrade() == pivot.getGrade()) {				//if grades are equal we sort by last name
+			int j = 0;
+			while (j < arr[i].getLastName().size()) {
+				if (arr[i].getLastName()[j] < pivot.getLastName()[j]) {
+					enrollee temp = arr[i];
+					arr[i] = arr[index];
+					arr[index] = temp;
+					index++;
+					break;
+				}
+				else if (arr[i].getLastName()[j] == pivot.getLastName()[j]) {
+					j++;
+				}
+				else {
+					break;
+				}
+			}
 		}
 	}
 	enrollee temp = arr[end];

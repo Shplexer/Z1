@@ -8,8 +8,6 @@
 #define LNG 15
 #define MID 10
 
-
-
 class enrollee {
 private:
 	std::string firstName{ "--" };
@@ -19,15 +17,8 @@ private:
 	int grade{ 0 };
 	int number{ 0 };
 public:
-	std::string getGoodLine(std::string input) {
-		std::string temp = input;
-		for (int i = 0; i < temp.size(); i++) {
-			if (temp[i] == '_') {
-				temp[i] = ' ';
-			}
-		}
-		return temp;
-	}
+	std::string getGoodLine(std::string input);
+
 	void setFirstName(std::string input) {
 		firstName = input;
 	}
@@ -64,23 +55,8 @@ public:
 	int getNumber() {
 		return number;
 	}
-
 	//show
-	void showInfo() {
-		std::string temp = lastName;
-		std::cout
-			<< std::left
-			<< std::setw(SSHRT) << number
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << getGoodLine(lastName)
-			<< std::setw(MID) << getGoodLine(firstName)
-			<< std::setw(LNG) << getGoodLine(middleName)
-			<< std::setw(SHRT) << "||"
-			<< std::setw(LNG) << getGoodLine(address)
-			<< std::setw(SHRT) << "||"
-			<< std::setw(SHRT) << grade
-			<< std::right << std::setw(SHRT) << "||"<<std::endl;
-	}
+	void showInfo();
 	
 };
 

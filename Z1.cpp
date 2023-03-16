@@ -1,37 +1,68 @@
-#include "header.h"
+#include "Z1.h"
 
 std::ifstream file;
 
 int main(){
 	//setlocale(LC_ALL, "Russian");
 	//system("chcp 1251");
-	std::string fileName{ "--" };
 	int size{ 1 };
-	bool exitCondition = false;
+	bool exitCondition;
 	do {
-		fileName = openFileMenu();
-		if (fileName == "Test.txt") {
-			testFunction();
+		exitCondition = false;
+		std::string fileName{INITFILENAME};
+		fileName = openFileMenu(fileName);
+		if (fileName == INITFILENAME) {
+			continue;
 		}
-		else {
-			size = calculateSize(fileName);
-			enrollee* people = new enrollee[size];
-			setList(people, size);						
-			exitCondition = editOptions(people, size);
-			file.close();
-			delete[] people;
-			people = nullptr;
-		}
+		size = calculateSize(fileName);
+		enrollee* people = new enrollee[size];
+		setList(people, size);
+		exitCondition = editOptions(people, size, fileName);
+		file.close();
+		delete[] people;
+		people = nullptr;
 	} while (!exitCondition);
 	return 0;
 }
 
-void openFile(std::string fileName) {
-	file.open(fileName);
-	if(file.is_open())
-		std::cout << "File \""<<getGoodLine(fileName) << "\" is open" << std::endl;
-	else
-		std::cout << "New file is created! Don't forget to save it!" << std::endl;
+std::string openFile(std::string fileName) {
+	bool exit;
+	int choice;
+	do {
+		exit = false;
+		fileName = fileNameCheck(fileName);
+		file.open(fileName);
+		if (file.is_open()) {
+			std::cout << "File \"" << getGoodLine(fileName) << "\" is open" << std::endl;
+			exit = true;
+		}
+		else {
+			std::cout << std::endl << "The name of the file you have entered does not exist." << std::endl
+				<< "1.Change the name of the file" << std::endl
+				<< "2.Create a new empty file" << std::endl
+				<< "3.Exit" << std::endl;
+			choice = checkInt();
+			switch (choice)
+			{
+			case fileName::change:
+				std::cout << "Enter the name of a source file: ";
+				fileName = makeLineGood();
+				break;
+			case fileName::newFile:
+				file.open(fileName);
+				std::cout << "New file " << fileName << " is created! Don't forget to save it!" << std::endl;
+				exit = true;
+				break;
+			case fileName::exitName:
+				std::cout << "Exiting the program...";
+				std::exit(0);
+			default:
+				std::cout << "ERR. Wrong input, try again" << std::endl;
+				break;
+			}
+		}
+	} while (!exit);
+	return fileName;
 }
 
 void setList(enrollee* people, int size) {
@@ -42,6 +73,7 @@ void setList(enrollee* people, int size) {
 		file >> tmp;							//удаление \n в конце строк
 		std::getline(file, str, ' ');
 		people[i].setLastName(tmp + str);
+
 		std::getline(file, str, ' ');
 		people[i].setFirstName(str);
 
@@ -77,20 +109,8 @@ int calculateSize(std::string fileName) {
 	return count;
 }
 
-void saveToFile(enrollee* people, int size) {
-	std::string saveFileName{ "==" };
+void saveToFile(enrollee* people, int size, std::string saveFileName) {
 	std::ofstream save;
-	std::cout << "Enter the name of the file you wish to save the list to: ";
-	saveFileName = makeLineGood();
-	std::string temp;
-
-	for (size_t i = saveFileName.size() - 4; i < saveFileName.size(); i++) {
-		temp = temp + saveFileName[i];
-	}
-	if (temp != ".txt") {
-		saveFileName = saveFileName + ".txt";
-	}
-	 
 	save.open(saveFileName, std::ios::out);
 	for (int i = 0; i < size; i++) {
 		save << people[i].getLastName() << " " <<

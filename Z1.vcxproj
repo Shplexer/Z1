@@ -127,15 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="classes.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="menu_functions.cpp" />
+    <ClCompile Include="tester.cpp" />
     <ClCompile Include="Z1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classes.h" />
     <ClInclude Include="functions.h" />
-    <ClInclude Include="header.h" />
+    <ClInclude Include="Z1.h" />
     <ClInclude Include="menu_functions.h" />
+    <ClInclude Include="tester.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

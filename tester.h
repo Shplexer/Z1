@@ -5,7 +5,6 @@
 #include "classes.h"
 
 #define A 0x41
-
 #define TESTSIZE 3
 #define CONTROLSIZE 4
 #define CONTROLSIZE_2 2

@@ -9,18 +9,19 @@ int main(){
 	bool exitCondition;
 	do {
 		exitCondition = false;
-		std::string fileName{INITFILENAME};
-		fileName = openFileMenu(fileName);
-		if (fileName == INITFILENAME) {
+		std::string fileName{};
+		bool isTest = false;
+		tie(fileName, isTest) = openFileMenu(fileName, isTest);
+		if (isTest) {
 			continue;
 		}
 		size = calculateSize(fileName);
-		enrollee* people = new enrollee[size];
-		setList(people, size);
-		exitCondition = editOptions(people, size, fileName);
+		enrollee* src = new enrollee[size];
+		setList(src, size, fileName);
+		exitCondition = editOptions(src, size, fileName);
 		file.close();
-		delete[] people;
-		people = nullptr;
+		delete[] src;
+		src = nullptr;
 	} while (!exitCondition);
 	return 0;
 }
@@ -33,7 +34,7 @@ std::string openFile(std::string fileName) {
 		fileName = fileNameCheck(fileName);
 		file.open(fileName);
 		if (file.is_open()) {
-			std::cout << "File \"" << getGoodLine(fileName) << "\" is open" << std::endl;
+			std::cout << "Your file is open!" << std::endl;
 			exit = true;
 		}
 		else {
@@ -65,30 +66,33 @@ std::string openFile(std::string fileName) {
 	return fileName;
 }
 
-void setList(enrollee* people, int size) {
+void setList(enrollee* people, int size, std::string fileName) {
+	std::ifstream setFile;
+	setFile.open(fileName);
 	for (int i = 0; i < size; i++)
 	{
 		std::string str{ "--" };
 		char tmp{ ' ' };
-		file >> tmp;							//удаление \n в конце строк
-		std::getline(file, str, ' ');
+		setFile >> tmp;							//удаление \n в конце строк
+		std::getline(setFile, str, ' ');
 		people[i].setLastName(tmp + str);
 
-		std::getline(file, str, ' ');
+		std::getline(setFile, str, ' ');
 		people[i].setFirstName(str);
 
-		std::getline(file, str, ' ');
+		std::getline(setFile, str, ' ');
 		people[i].setMiddleName(str);
 
-		std::getline(file, str, ' ');
+		std::getline(setFile, str, ' ');
 		people[i].setAddress(str);
 
-		int num{ 0 };
-		file >> num;
+		int num{ 0 };		
+		setFile >> num;
 		people[i].setGrade(num);
 
 		people[i].setNumber(i + 1);
 	}
+	setFile.close();
 }
 
 int calculateSize(std::string fileName) {
@@ -111,6 +115,29 @@ int calculateSize(std::string fileName) {
 
 void saveToFile(enrollee* people, int size, std::string saveFileName) {
 	std::ofstream save;
+	bool exit;
+	if (file.is_open()) {
+		std::cout << "The name of an open file: " << saveFileName << std::endl <<
+			"Whould you like to make a new one or save into this one?" << std::endl <<
+			"1. Save to another file" << std::endl <<
+			"2. Save here" << std::endl;
+		do {
+			exit = true;
+			int choice = checkInt();
+			if (choice == saveFileName::changeFile) {
+				std::cout << "Enter a path to the file: ";
+				saveFileName = makeLineGood();
+			}
+			if (choice != saveFileName::changeFile && choice != saveFileName::thisFile) {
+				exit = false;
+			}
+		} while (!exit);
+	}
+	else {
+		std::cout << "No opened file found. Please enter a path to the file you wish to save your project to: ";
+		saveFileName = makeLineGood();
+	}
+	saveFileName = fileNameCheck(saveFileName);
 	save.open(saveFileName, std::ios::out);
 	for (int i = 0; i < size; i++) {
 		save << people[i].getLastName() << " " <<

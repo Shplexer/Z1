@@ -8,7 +8,7 @@ void testFunc() {
 
 	//testing adding function
 	createTestArray(testArr, size, testType::add);
-	createTestArray(controlArr, controlSize, testType::add);
+	createTestArray(controlArr, controlSize, testType::add );
 	size = addToArray(&testArr, size, true);
 	std::cout << "ADDING FUNCTION: ";
 	compareArrays(testArr, controlArr, size, controlSize);
@@ -49,7 +49,8 @@ void testFunc() {
 
 	//printAll(testArr, size);
 	//printAll(controlArr, controlSize);
-	std::cout << std::endl << "\033[36m" << "Wow, the code is actually correct... I... I'm not sure what to say... Congratulations, I guess..." << std::endl<<"Now going back to main menu." << "\033[0m" << std::endl << std::endl;
+	std::cout << std::endl << "\033[36m" << "Wow, the code is actually correct... I... I'm not sure what to say... Congratulations, I guess..." <<
+		std::endl << "Now going back to main menu." << "\033[0m" << std::endl << std::endl;
 	delete[] controlArr;
 	delete[] testArr;
 	controlArr = nullptr;
@@ -61,7 +62,7 @@ void createTestArray(enrollee* arr, int size, testType typeOfTest) {
 	{
 	case testType::add:
 		for (int i = 0; i < size; i++) {
-			char ch = A + i;
+			char ch = static_cast<char>(A + i);
 			std::string s{ ch };
 			arr[i].setAddress(s);
 			arr[i].setFirstName(s);
@@ -72,7 +73,7 @@ void createTestArray(enrollee* arr, int size, testType typeOfTest) {
 		break;
 	case testType::sortByNum:
 		for (int i = 0, j = size - 1; i < size; i++, j--) {
-			char ch = A + j;
+			char ch = static_cast<char>(A + j);
 			std::string s{ ch };
 			arr[i].setAddress(s);
 			arr[i].setFirstName(s);
@@ -83,7 +84,8 @@ void createTestArray(enrollee* arr, int size, testType typeOfTest) {
 		break;
 	case testType::sortByString:
 		for (int i = 0; i < size; i++) {
-			char ch = A + i;
+			char ch = static_cast<char>(A + i);
+
 			std::string s{ ch };
 			arr[i].setAddress(s);
 			arr[i].setFirstName(s);
@@ -94,7 +96,7 @@ void createTestArray(enrollee* arr, int size, testType typeOfTest) {
 		break;
 	case testType::showLimited:
 		for (int i = 0, j = 1; i < size; i++, j++) {
-			char ch = A + j;
+			char ch = static_cast<char>(A + j);
 			std::string s{ ch };
 			arr[i].setAddress(s);
 			arr[i].setFirstName(s);
@@ -105,7 +107,7 @@ void createTestArray(enrollee* arr, int size, testType typeOfTest) {
 		break;
 	case testType::topN:
 		for (int i = size - 1, j = 1; i >= 0; i--, j++) {
-			char ch = A + j;
+			char ch = static_cast<char>(A + j);
 			std::string s{ ch };
 			arr[i].setAddress(s);
 			arr[i].setFirstName(s);
@@ -116,7 +118,7 @@ void createTestArray(enrollee* arr, int size, testType typeOfTest) {
 		break;
 	case testType::def:
 		for (int i = 0; i < size; i++) {
-			char ch = A + i;
+			char ch = static_cast<char>(A + i);
 			std::string s{ ch };
 			arr[i].setAddress(s);
 			arr[i].setFirstName(s);

@@ -94,7 +94,8 @@ int checkInt() {
 		std::cin.ignore(INT_MAX, '\n');								//clear buffer for INT_MAX characters or until '\n'
 		std::cout << "ERR. Wrong input, try again" << std::endl;
 	}
-	while ((getchar()) != '\n');
+	std::cin.ignore(INT_MAX, '\n');
+	//while ((getchar()) != '\n');
 	return input;
 }
 
@@ -130,7 +131,7 @@ int addToArray(enrollee** arr, int srcSize, bool test) {
 			do{
 				num = checkInt();
 				if (num < 0)
-					std::cout << "ERR. Enter a positive number of grades" << std::endl;
+					std::cout << "ERR. Enter a valid number of grades" << std::endl;
 			} while (num < 0);
 			(*arr)[i].setGrade(num);
 		}

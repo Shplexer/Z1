@@ -1,11 +1,10 @@
 #include "menu_functions.h"
-
-std::string openFileMenu(std::string fileName){
-	int size{ 1 };
+std::tuple<std::string, bool> openFileMenu(std::string fileName, bool isTest){
 	int choice{ 0 };
 	bool exit;
-	bool isTest;
-	std::cout << "Welcome!" << std::endl << "Var #2 by Daniil Orekhov" << std::endl;
+	bool isEmpty;
+	std::cout << "==============================================================================================" << std::endl;
+	std::cout << "Welcome!" << std::endl << "Made by Orekhov Daniil, group 423, task #1, variant #2" << std::endl;
 	std::cout << "==============================================================================================" << std::endl;
 	std::cout << "Task: Develop a class for a given subject area" << std::endl <<
 		"Access to the data must be implemented through the Set, Get and Show methods" << std::endl <<
@@ -18,23 +17,27 @@ std::string openFileMenu(std::string fileName){
 	std::cout
 		<< "1. Test" << std::endl
 		<< "2. Load a file" << std::endl
-		<< "3. New file" << std::endl
+		<< "3. Manual input" << std::endl
 		<< "4. Exit" << std::endl;
 	std::cout << "==============================================================================================" << std::endl;
 	do {
 		isTest = false;
+		isEmpty = false;
 		exit = true;
 		choice = checkInt();
+
 		switch (choice)
 		{
 		case FileChoice::test:
 			testFunc();
+			isTest = true;
 			break;
 		case FileChoice::customFile:
 			std::cout << "Enter the name of a source file: ";
 			fileName = makeLineGood();
 			break;
 		case FileChoice::emptyStart:
+			isEmpty = true;
 			break;
 		case FileChoice::leaveFileMenu:
 			std::cout << "Exiting the program...";
@@ -45,10 +48,10 @@ std::string openFileMenu(std::string fileName){
 			break;
 		}
 	} while (!exit);
-	if (fileName != INITFILENAME) {
+	if (!isTest && !isEmpty) {
 		fileName = openFile(fileName);
 	}
-	return fileName;
+	return std::make_tuple(fileName, isTest);
 }
 
 bool editOptions(enrollee* source, int srcSize, std::string fileName) {
@@ -71,12 +74,16 @@ bool editOptions(enrollee* source, int srcSize, std::string fileName) {
 		exitAll = false;
 		exitEdit = false;
 		printAll(people, size);
+		delete[] people;
+		size = srcSize;
+		people = new enrollee[size];
+		setList(people, size, fileName);
 		std::cout << "Edit options:" << std::endl <<
 			"1.Add an enrollee to the list" << std::endl <<
 			"2.Sort the list" << std::endl <<
 			"3.Show enrollees with grades equal or higher than the input number" << std::endl <<
 			"4.Show N enrollees with the highest grades" << std::endl <<
-			"5.Save info to the " << fileName << " file" << std::endl <<
+			"5.Save info to your file" << std::endl <<
 			"6.Return to main menu" << std::endl <<
 			"7.Exit the program." << std::endl;
 		std::cout << "==============================================================================================" << std::endl;
@@ -111,6 +118,7 @@ bool editOptions(enrollee* source, int srcSize, std::string fileName) {
 			break;
 		}
 	} while (!exitEdit);
-
+	delete[] people;
+	people = nullptr;
 	return exitAll;
 }

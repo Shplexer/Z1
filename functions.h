@@ -2,7 +2,6 @@
 #define __FUNCTIONS_H_
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include "classes.h"
 
 #define D 0x44
